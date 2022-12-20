@@ -101,10 +101,10 @@ __attribute__((weak)) bool process_record_keymap(uint16_t keycode, keyrecord_t *
 bool process_record_user(uint16_t keycode, keyrecord_t * record) {
     mod_state = get_mods();
     if (!process_record_keymap(keycode, record)) { return false; }
-    if (!process_capsnum(keycode, record)) { return false; }
     if (!process_esc_to_base(keycode, record)) { return false; }
     if (!process_lsft_for_caps(keycode, record)) { return false; }
     if (!process_autocorrection(keycode, record)) { return false; }
+    if (!process_popi_meh(keycode, record)) { return false; }
 
     // Key macros ...
     switch (keycode) {
@@ -368,43 +368,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t * record) {
         }
         break;
 
-        // DotCom domain macros
-    case DOTCOM:
-        if (record -> event.pressed) {
-            send_string(".com");
-        } else {
-            // when keycode is released
-        }
-        break;
-    case YAHOO:
-        if (record -> event.pressed) {
-            send_string("yahoo.com");
-        } else {
-            // when keycode is released
-        }
-        break;
-    case OUTLOOK:
-        if (record -> event.pressed) {
-            send_string("outlook.com");
-        } else {
-            // when keycode is released
-        }
-        break;
-    case GMAIL:
-        if (record -> event.pressed) {
-            send_string("gmail.com");
-        } else {
-            // when keycode is released
-        }
-        break;
-    case HOTMAIL:
-        if (record -> event.pressed) {
-            send_string("hotmail.com");
-        } else {
-            // when keycode is released
-        }
-        break;
-
         // Windows Key lockout
     case WINLOCK:
         if (record -> event.pressed) {
@@ -618,14 +581,14 @@ void eeconfig_init_user(void) {
     user_config.raw                           = 0;
     user_config.rgb_hilite_caps               = true;
     user_config.rgb_hilite_numpad             = true;
-    user_config.double_tap_shift_for_capslock = true;
+    user_config.double_tap_shift_for_capslock = false;
     user_config.del_right_home_top            = true;
     user_config.encoder_press_mute_or_media   = true;
     user_config.esc_double_tap_to_baselyr     = true;
-    user_config.ins_on_shft_bkspc_or_del      = true;
-    user_config.disable_space_mods            = true;
-    user_config.autocorrect                   = true;
-    user_config.rgb_english_caps              = true;
+    user_config.ins_on_shft_bkspc_or_del      = false;
+    user_config.disable_space_mods            = false;
+    user_config.autocorrect                   = false;
+    user_config.rgb_english_caps              = false;
 
     eeconfig_update_user(user_config.raw);
 }

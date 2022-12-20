@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 enum custom_user_layers {
     _BASE,
     _FN1,
-    _NUMPADMOUSE,
+    //_NUMPADMOUSE,
     _MOUSEKEY,
     #ifdef GAME_ENABLE
     _GAME
@@ -66,11 +66,7 @@ enum custom_user_keycodes {
         TG_AUTOCR,     // Toggle AutoCorrect
         TG_ENGCAP,     // Toggle highlighting Non-English letters during CAPSLOCK on ISO boards
 
-        YAHOO,         // yahoo.com
-        OUTLOOK,       // outlook.com
-        GMAIL,         // gmail.com
-        HOTMAIL,       // hotmail.com
-        DOTCOM,        // .com
+        POPI_MEH,
 
         EMO_SHRUG,     // `\_("/)_/`
         EMO_CONFUSE,   // (*_*)
@@ -111,6 +107,7 @@ void encoder_action_volume(bool clockwise);
 void encoder_action_mediatrack(bool clockwise);
 void encoder_action_navword(bool clockwise);
 void encoder_action_navpage(bool clockwise);
+void encoder_action_scroll(bool clockwise);
 
 uint8_t get_selected_layer(void);
 void encoder_action_layerchange(bool clockwise);
