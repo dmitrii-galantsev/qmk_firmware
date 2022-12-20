@@ -5,51 +5,6 @@
 
 #include "gourdo1.h"
 
-static bool process_capsnum(uint16_t keycode, keyrecord_t * record) {
-    static bool toggled = false;
-    static bool tapped = false;
-    static uint16_t tap_timer = 0;
-
-    if (keycode == CAPSNUM) {
-        if (user_config.double_tap_shift_for_capslock) {
-            // Act as TT(_NUMPADMOUSE)
-            if (record -> event.pressed) { // CAPSNUM key was pressed
-                // Check whether the key was recently tapped
-                if (tapped && !timer_expired(record -> event.time, tap_timer)) {
-                    // This is a double tap (or possibly a triple tap or more)
-                    // Toggle the layer on.
-                    toggled = true;
-                } else if (toggled) {
-                    // Otherwise if currently toggled, turn it off
-                    toggled = false;
-                    tapped = false;
-                    layer_off(_NUMPADMOUSE);
-                }
-                // Set that the first tap occurred in a potential double tap
-                tapped = true;
-                tap_timer = record -> event.time + TAPPING_TERM;
-                layer_on(_NUMPADMOUSE);
-            } else if (!toggled) {
-                // If not currently toggled, turn off on key release
-                layer_off(_NUMPADMOUSE);
-                return false;
-            }
-        } else { // When double_tap_shift_for_capslock == false
-            // Act as KC_CAPS
-            if (record -> event.pressed) {
-                register_code(KC_CAPS);
-            } else {
-                unregister_code(KC_CAPS);
-            }
-        }
-        return false;
-    } else {
-        // On an event with any other key, reset the double tap state
-        tapped = false;
-    }
-    return true;
-}
-
 static bool process_esc_to_base(uint16_t keycode, keyrecord_t * record) {
     static bool tapped = false;
     static uint16_t tap_timer = 0;
@@ -99,3 +54,19 @@ static bool process_lsft_for_caps(uint16_t keycode, keyrecord_t * record) {
     }
     return true;
 }
+
+
+static bool process_popi_meh(uint16_t keycode, keyrecord_t * record) {
+    if (keycode == POPI_MEH) {
+        if (record -> event.pressed) {
+            //send_string("MEH!");
+            set_mods(MOD_MEH);
+            register_code16(keycode);
+        } else {
+            unregister_code16(keycode);
+            del_mods(MOD_MEH);
+        }
+    }
+    return true;
+}
+

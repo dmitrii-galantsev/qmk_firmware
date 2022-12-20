@@ -74,6 +74,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             tap_code16(KC_PGDN);
     }
 
+    void encoder_action_scroll(bool clockwise) {
+        if (clockwise)
+            tap_code16(KC_MS_WH_DOWN);
+        else
+            tap_code16(KC_MS_WH_UP);
+    }
+
     // LAYER HANDLING
     uint8_t selected_layer = 0;
 
@@ -202,7 +209,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         if (!encoder_update_keymap(index, clockwise)) { return false; }
         if (index != ENCODER_DEFAULTACTIONS_INDEX) {return true;}  // exit if the index doesn't match
         uint8_t mods_state = get_mods();
-        if (mods_state & MOD_BIT(KC_LSFT) ) { // If you are holding L shift, encoder changes layers
+        if (mods_state & MOD_BIT(KC_RALT)) { // if holding Right Alt, scroll mouse wheel
+            encoder_action_scroll(clockwise);
+        } else if (mods_state & MOD_BIT(KC_LSFT) ) { // If you are holding L shift, encoder changes layers
             encoder_action_layerchange(clockwise);
         } else if (mods_state & MOD_BIT(KC_RSFT) ) { // If you are holding R shift, Page up/dn
             unregister_mods(MOD_BIT(KC_RSFT));
