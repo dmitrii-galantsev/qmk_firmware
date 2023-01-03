@@ -1,20 +1,3 @@
-/*
- *  Copyright (C) 2021  System76
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #include "launch_1.h"
 
 #include "usb_mux.h"
@@ -181,7 +164,9 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         return false;
     }
 
-    switch (keycode) {
+    rgb_config_t * const DEFAULT_LAYER_RGB_MATRIX = layer_rgb;
+
+    switch(keycode) {
         case QK_BOOT:
             if (record->event.pressed) {
                 system76_ec_unlock();
@@ -191,6 +176,36 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 #else
             return true;
 #endif
+        case RGB_MOD:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->mode++;
+            }
+            break;
+        case RGB_RMOD:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->mode--;
+            }
+            break;
+        case RGB_SPI:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->speed++;
+            }
+            break;
+        case RGB_SPD:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->speed--;
+            }
+            break;
+        case RGB_HUI:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->hsv.h++;
+            }
+            break;
+        case RGB_HUD:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->hsv.h--;
+            }
+            break;
         case RGB_VAD:
             if (record->event.pressed) {
                 uint8_t level = rgb_matrix_config.hsv.v;
