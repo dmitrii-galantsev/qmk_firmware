@@ -1,4 +1,5 @@
 #include "dynamic_keymap.h"
+#include "rgb_matrix_types.h"
 #include "tmk_core/common/eeprom.h"
 
 #include "launch_1.h"
@@ -149,12 +150,44 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     if (input_disabled)
         return false;
 
+    rgb_config_t * const DEFAULT_LAYER_RGB_MATRIX = layer_rgb;
+
     switch(keycode) {
         case RESET:
             if (record->event.pressed) {
                 system76_ec_unlock();
             }
             return false;
+        case RGB_MOD:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->mode++;
+            }
+            break;
+        case RGB_RMOD:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->mode--;
+            }
+            break;
+        case RGB_SPI:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->speed++;
+            }
+            break;
+        case RGB_SPD:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->speed--;
+            }
+            break;
+        case RGB_HUI:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->hsv.h++;
+            }
+            break;
+        case RGB_HUD:
+            if (record->event.pressed) {
+                DEFAULT_LAYER_RGB_MATRIX->hsv.h--;
+            }
+            break;
         case RGB_VAD:
             if (record->event.pressed) {
                 uint8_t level = rgb_matrix_config.hsv.v;
