@@ -53,11 +53,11 @@
 // Limit brightness to support USB-A at 0.5 A
 // TODO: Do this dynamically based on power source
 #    define RGB_MATRIX_MAXIMUM_BRIGHTNESS 176                          // Limits maximum brightness of LEDs to 176 out of 255. If not defined, maximum brightness is set to 255
-#    define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_RAINBOW_MOVING_CHEVRON  // Sets the default mode, if none has been set
-#    define RGB_MATRIX_STARTUP_HUE 142                                 // Sets the default hue value, if none has been set
+#    define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_OUT_IN_DUAL       // Sets the default mode, if none has been set
+#    define RGB_MATRIX_STARTUP_HUE 128                                 // Sets the default hue value, if none has been set
 #    define RGB_MATRIX_STARTUP_SAT 255                                 // Sets the default saturation value, if none has been set
-#    define RGB_MATRIX_STARTUP_VAL RGB_MATRIX_MAXIMUM_BRIGHTNESS       // Sets the default brightness value, if none has been set
-#    define RGB_MATRIX_STARTUP_SPD 127                                 // Sets the default animation speed, if none has been set
+#    define RGB_MATRIX_STARTUP_VAL 64                                  // Sets the default brightness value, if none has been set
+#    define RGB_MATRIX_STARTUP_SPD 16                                  // Sets the default animation speed, if none has been set
 #    define RGB_MATRIX_DISABLE_KEYCODES                                // Disables control of rgb matrix by keycodes (must use code functions to control the feature)
 
 #    define ENABLE_RGB_MATRIX_CYCLE_ALL
@@ -81,8 +81,8 @@
 
 // I2C {
 #define F_SCL 100000UL // Run I2C bus at 100 kHz
-#define I2C_START_RETRY_COUNT 20
-#define I2C_TIMEOUT 100 // milliseconds
+#define I2C_START_RETRY_COUNT 50
+#define I2C_TIMEOUT 500 // milliseconds
 // } I2C
 
 // EEPROM {
@@ -93,7 +93,7 @@
 // Bump this every time we change what we store
 // This will automatically reset the EEPROM with defaults
 // and avoid loading invalid data from the EEPROM
-#define EEPROM_VERSION 0x02
+#define EEPROM_VERSION 0x03
 #define EEPROM_VERSION_ADDR (EEPROM_MAGIC_ADDR + 2)
 // } EEPROM
 
