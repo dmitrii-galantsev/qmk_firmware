@@ -72,23 +72,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
 
     [_FN1] = LAYOUT(
-        EE_CLR,  _______, _______, _______, _______, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, _______, _______, KC_PSCR, KC_SLCK, KC_PAUS,           KC_SLEP,
-        PRNCONF, TG_CAPS, TG_PAD,  TG_ESC,  _______, TG_TDCAP,TG_ENC,  TG_INS,TG_SPCMOD, _______,_______, RGB_TOD, RGB_TOI, _______,          RGB_TOG,
+        EE_CLR,  _______, _______, _______, _______, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, _______, _______, KC_PSCR, KC_SLCT, KC_PAUS,           KC_SLEP,
+        PRNCONF, TG_CAPS, TG_PAD,  TG_ESC,  _______, TG_TDCAP,TG_ENC,  TG_INS,TG_SPCMOD, _______, _______, RGB_TOD, RGB_TOI, _______,           RGB_TOG,
         _______, RGB_SAD, RGB_VAI, RGB_SAI, NK_TOGG, _______, _______, _______, _______, _______, _______, SWAP_L,  SWAP_R,  QK_BOOT,           KC_HOME,
         _______, RGB_HUD, RGB_VAD, RGB_HUI, _______, POPI_MEH,_______, _______, _______, _______, _______, _______,          _______,           KC_END,
         _______,          RGB_NITE,_______, _______, _______, QK_BOOT, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD,  _______,
         _______, WINLOCK, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
-
-    [_MOUSEKEY] = LAYOUT(
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          KC_WH_U,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,          KC_WH_D,
-        _______,          _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          KC_BTN1, KC_MS_U, KC_BTN2,
-        _______, _______, _______,                            _______,                            _______, _______, KC_BTN3, KC_MS_L, KC_MS_D, KC_MS_R
-    ),
-
 };
 
 #if defined(ENCODER_ENABLE) && !defined(ENCODER_DEFAULTACTIONS_ENABLE) // Encoder Functionality when not using userspace defaults

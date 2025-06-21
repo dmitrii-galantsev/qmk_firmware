@@ -17,6 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+// DEFINE MACROS
+#ifndef ARRAYSIZE
+#define ARRAYSIZE(arr)  sizeof(arr)/sizeof(arr[0])
+#endif // !ARRAYSIZE
+
 // LAYERS -- Note: to avoid compile problems, make sure total layers matches DYNAMIC_KEYMAP_LAYER_COUNT defined in config.h (where _COLEMAK layer is defined)
 enum custom_user_layers {
     _BASE,
