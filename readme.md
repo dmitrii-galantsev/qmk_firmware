@@ -1,36 +1,38 @@
-# Quantum Mechanical Keyboard Firmware
+# POPI's Firmware for QMK keyboards
 
-[![Current Version](https://img.shields.io/github/tag/qmk/qmk_firmware.svg)](https://github.com/qmk/qmk_firmware/tags)
-[![Discord](https://img.shields.io/discord/440868230475677696.svg)](https://discord.gg/qmk)
-[![Docs Status](https://img.shields.io/badge/docs-ready-orange.svg)](https://docs.qmk.fm)
-[![GitHub contributors](https://img.shields.io/github/contributors/qmk/qmk_firmware.svg)](https://github.com/qmk/qmk_firmware/pulse/monthly)
-[![GitHub forks](https://img.shields.io/github/forks/qmk/qmk_firmware.svg?style=social&label=Fork)](https://github.com/qmk/qmk_firmware/)
+Personal keymaps on top of upstream [QMK](https://github.com/qmk/qmk_firmware) (0.34.7, November 2026):
 
-This is a keyboard firmware based on the [tmk\_keyboard firmware](https://github.com/tmk/tmk_keyboard) with some useful features for Atmel AVR and ARM controllers, and more specifically, the [OLKB product line](https://olkb.com), the [ErgoDox EZ](https://ergodox-ez.com) keyboard, and the Clueboard product line.
+| Keyboard | Keymap | Files |
+|---|---|---|
+| System76 Launch (launch_1) | `popi_keymap` | `keyboards/system76/launch_1/keymaps/popi_keymap/` |
+| GMMK Pro rev1 ANSI | `gourdo1` | `keyboards/gmmk/pro/rev1/ansi/keymaps/gourdo1/`, `users/gourdo1/` |
 
-## Documentation
+Prebuilt images in the repository root: `system76_launch_1_popi_keymap.hex`, `gmmk_pro_rev1_ansi_gourdo1.bin`.
 
-* [See the official documentation on docs.qmk.fm](https://docs.qmk.fm)
+## Build and flash
 
-The docs are powered by [VitePress](https://vitepress.dev/). They are also viewable offline; see [Previewing the Documentation](https://docs.qmk.fm/#/contributing?id=previewing-the-documentation) for more details.
+```bash
+qmk config user.qmk_home=$PWD
+qmk git-submodule
+qmk flash -kb system76/launch_1 -km popi_keymap
+qmk flash -kb gmmk/pro/rev1/ansi -km gourdo1
+```
 
-You can request changes by making a fork and opening a [pull request](https://github.com/qmk/qmk_firmware/pulls).
+Nix provides the CLI and both toolchains: `nix shell nixpkgs#qmk`.
 
-## Supported Keyboards
+OpenSUSE Tumbleweed instead:
 
-* [Planck](/keyboards/planck/)
-* [Preonic](/keyboards/preonic/)
-* [ErgoDox EZ](/keyboards/ergodox_ez/)
-* [Clueboard](/keyboards/clueboard/)
-* [Cluepad](/keyboards/clueboard/17/)
-* [Atreus](/keyboards/atreus/)
+```bash
+python3 -m pip install --user qmk
+sudo zypper install cross-arm-none-gcc13 cross-avr-gcc7 dfu-programmer dfu-util avrdude-devel avr-libc
+qmk setup
+```
 
-The project also includes community support for [lots of other keyboards](/keyboards/).
+compile_commands.json: `qmk compile --compiledb -kb system76/launch_1 -km popi_keymap`
 
-## Maintainers
+## Updating to a newer QMK
 
-QMK is developed and maintained by Jack Humbert of OLKB with contributions from the community, and of course, [Hasu](https://github.com/tmk). The OLKB product firmwares are maintained by [Jack Humbert](https://github.com/jackhumbert), the Ergodox EZ by [ZSA Technology Labs](https://github.com/zsa), the Clueboard by [Zach White](https://github.com/skullydazed), and the Atreus by [Phil Hagelberg](https://github.com/technomancy).
-
-## Official Website
-
-[qmk.fm](https://qmk.fm) is the official website of QMK, where you can find links to this page, the documentation, and the keyboards supported by QMK.
+```bash
+git fetch upstream
+git rebase upstream/master
+```
