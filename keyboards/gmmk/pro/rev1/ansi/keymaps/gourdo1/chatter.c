@@ -41,6 +41,7 @@ typedef struct __attribute__((packed)) {
 } chatter_event_t;
 
 _Static_assert(sizeof(chatter_event_t) == 14, "chatter_event_t");
+_Static_assert(CHATTER_KEYS <= 256, "key index must fit in uint8_t");
 
 static filter_t        main_filter[CHATTER_KEYS];
 static filter_t        shadow_filter[CHATTER_KEYS];
@@ -57,7 +58,7 @@ static chatter_event_t events[CHATTER_LOG_SIZE];
 static uint32_t        next_seq;
 
 static uint16_t clamp16(uint32_t v) {
-    return v > UINT16_MAX ? UINT16_MAX : v;
+    return (uint16_t)(v > UINT16_MAX ? UINT16_MAX : v);
 }
 
 static void log_event(uint8_t key, uint8_t type, uint32_t a, uint32_t b) {
@@ -90,13 +91,14 @@ static bool filter_step(filter_t *f, bool *state, bool raw, uint32_t now, uint8_
 void debounce_init(void) {}
 
 bool debounce(matrix_row_t raw[], matrix_row_t cooked[], bool changed) {
+    (void)changed;
     uint32_t now            = timer_read32();
     bool     cooked_changed = false;
 
     for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
         for (uint8_t col = 0; col < MATRIX_COLS; col++) {
-            uint8_t      k    = row * MATRIX_COLS + col;
-            matrix_row_t mask = MATRIX_ROW_SHIFTER << col;
+            uint8_t      k    = (uint8_t)(row * MATRIX_COLS + col);
+            matrix_row_t mask = (matrix_row_t)(MATRIX_ROW_SHIFTER << col);
             bool         r    = raw[row] & mask;
             bool         down = cooked[row] & mask;
 
@@ -181,7 +183,7 @@ bool via_command_kb(uint8_t *data, uint8_t length) {
             uint8_t n = 0;
             while (n < 4 && start + n < CHATTER_KEYS) {
                 uint8_t *p = &data[4 + n * 6];
-                uint8_t  k = start + n;
+                uint8_t  k = (uint8_t)(start + n);
                 memcpy(p, &presses[k], 2);
                 memcpy(p + 2, &prevented[k], 2);
                 memcpy(p + 4, &suspects[k], 2);

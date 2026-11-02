@@ -3,6 +3,7 @@
 
 #include QMK_KEYBOARD_H
 
+// clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Layer 0, default layer
@@ -107,6 +108,8 @@ static const uint8_t base_modes[] = {
     RGB_MATRIX_MULTISPLASH,
     RGB_MATRIX_CUSTOM_active_keys,
 };
+
+// clang-format on
 
 static void step_base_mode(int8_t dir) {
     rgb_config_t *base = &layer_rgb[0];
