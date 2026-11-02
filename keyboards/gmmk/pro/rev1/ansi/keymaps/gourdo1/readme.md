@@ -19,7 +19,7 @@ These Windows-centric layouts are based on Jonavin's GMMK Pro [layout](https://g
 * AutoCorrection:  Pascal Getreuer's AutoCorrect code incorporated with 400 word dictionary on words > 4 characters.
 * Most [default Glorious shortcuts](https://cdn.shopify.com/s/files/1/0549/2681/files/GMMK_Pro_User_Guide.pdf) enabled
 * [N-key Rollover](https://en.wikipedia.org/wiki/Rollover_\(keyboard\)#n-key_rollover) (NKRO) -- toggled with [FN]R
-* 1000Hz polling rate with 5ms debounce time for quick response in games.
+* 1000Hz polling rate; per-key debounce (instant key-down, 10ms deferred key-up).
 * Mouse Keys! Don't want to move your hands off the keyboard or you didn't bring it with you? Use cursor keys to move the mouse.
 * Overlay numpad on 789-UIOP-JKL;-M,. & Space-bar mapped to Enter key for rapid number entry.
 * Gaming mode ([FN]Win-key) locks out Win-key and double-tap Shift Capslock; Also RGB highlights WSAD and nearby gaming keys.
