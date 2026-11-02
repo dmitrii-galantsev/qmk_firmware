@@ -24,9 +24,11 @@
 #ifndef CHATTER_TOUCH_MIN
 #    define CHATTER_TOUCH_MIN 1
 #endif
-#define CHATTER_LOG_SIZE 64
+#ifndef CHATTER_LOG_SIZE
+#    define CHATTER_LOG_SIZE 1024
+#endif
 #define CHATTER_KEYS (MATRIX_ROWS * MATRIX_COLS)
-#define CHATTER_VERSION 2
+#define CHATTER_VERSION 3
 
 #define CHATTER_CMD 0xD0
 enum { CHATTER_INFO = 1, CHATTER_EVENTS = 2, CHATTER_COUNTERS = 3, CHATTER_CLEAR = 4 };
@@ -48,6 +50,7 @@ typedef struct __attribute__((packed)) {
 
 _Static_assert(sizeof(chatter_event_t) == 14, "chatter_event_t");
 _Static_assert(CHATTER_KEYS <= 256, "key index must fit in uint8_t");
+_Static_assert(CHATTER_LOG_SIZE <= UINT16_MAX, "log size must fit in uint16_t");
 
 static filter_t        main_filter[CHATTER_KEYS];
 static filter_t        shadow_filter[CHATTER_KEYS];
@@ -192,11 +195,13 @@ bool via_command_kb(uint8_t *data, uint8_t length) {
             data[12] = DEBOUNCE_RELEASE;
             data[13] = CHATTER_SHADOW_DEBOUNCE;
             data[14] = CHATTER_SUSPECT_GAP;
-            data[15] = CHATTER_LOG_SIZE;
+            data[15] = 0;
             data[16] = MATRIX_ROWS;
             data[17] = MATRIX_COLS;
             data[18] = CHATTER_TOUCH_SETTLE;
             data[19] = CHATTER_TOUCH_MIN;
+            data[20] = (uint8_t)(CHATTER_LOG_SIZE & 0xFF);
+            data[21] = (uint8_t)(CHATTER_LOG_SIZE >> 8);
             break;
         case CHATTER_EVENTS: {
             uint32_t oldest = next_seq > CHATTER_LOG_SIZE ? next_seq - CHATTER_LOG_SIZE : 0;

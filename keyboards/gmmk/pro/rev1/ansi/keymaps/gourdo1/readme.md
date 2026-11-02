@@ -69,8 +69,6 @@ These Windows-centric layouts are based on Jonavin's GMMK Pro [layout](https://g
 
 * Default knob turn changes volume; button press toggles mute
 * Exponential encoder: quick repeated volume up doubles increase; quick repeated volume down triples decrease.
-* FN + knob turn changes RGB idle timeout
-* FN + knob push puts PC to Sleep
 * holding Left Shift changes layers
 * holding Right Shift navigates page up/down
 * holding Left Ctrl navigates prev/next word
@@ -95,7 +93,7 @@ These Windows-centric layouts are based on Jonavin's GMMK Pro [layout](https://g
 * RGB backlight brightness: [FN]W/S
 * RGB backlight saturation: [FN]Q/E
 * RGB backlight night mode toggle: [FN]Z (indicators still work)
-* RGB backlight timeout: [FN]Encoder or "-" and "=" (default 15 minutes)
+* RGB backlight timeout: [FN] "-" and "=" (default 15 minutes)
     *  F-key row indicator lights (cyan and blue) in FN layer display the current backlight timeout in minutes
 * [FN]Z to turn off RGB backlighting (indicator lights still work); press again to toggle
 * Left side RGB indicators in order from top: Scroll Lock (red), Numpad (blue), Capslock (green).

@@ -57,7 +57,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* FN1 Layout
      *
      * ,-------------------------------------------------------------------------------------------------------------.
-     * | Esc  || ____ | ____ | ____ | ____ ||MdPrv |MdNxt |MdPly |MdStp || ____ | ____ |PrScr |ScrLk ||Pause ||Sleep |
+     * |EE_CLR|| ____ | ____ | ____ | ____ ||MdPrv |MdNxt |MdPly |MdStp || ____ | ____ |PrScr |ScrLk ||Pause || ____ |
      * |=============================================================================================================|
      * | ____ | ____ | ____ | ____ | ____ | ____ | ____ | ____ | ____ | ____ | ____ |RGBTOD|RGBTOI| ________ ||RGBTOG|
      * |------+------+------+------+------+------+------+------+------+------+------+------+------+----------++------|
@@ -72,8 +72,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
 
     [_FN1] = LAYOUT(
-        EE_CLR,  _______, _______, _______, _______, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS,           KC_SLEP,
-        PRNCONF, TG_CAPS, TG_PAD,  TG_ESC,  _______, TG_TDCAP,TG_ENC,  TG_INS,TG_SPCMOD, _______, _______, RGB_TOD, RGB_TOI, _______,           RM_TOGG,
+        EE_CLR,  _______, _______, _______, _______, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS,           _______,
+        _______, TG_CAPS, TG_PAD,  TG_ESC,  _______, TG_TDCAP,TG_ENC,  TG_INS,TG_SPCMOD, _______, _______, RGB_TOD, RGB_TOI, _______,           RM_TOGG,
         _______, RM_SATD, RM_VALU, RM_SATU, NK_TOGG, _______, _______, _______, _______, _______, _______, SWAP_L,  SWAP_R,  QK_BOOT,           KC_HOME,
         _______, RM_HUED, RM_VALD, RM_HUEU, _______, POPI_MEH,_______, _______, _______, _______, _______, _______,          _______,           KC_END,
         _______,          RGB_NITE,_______, _______, _______, QK_BOOT, NK_TOGG, _______, _______, _______, _______,          _______, RM_NEXT,  _______,
@@ -104,16 +104,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     } else if (mods_state & MOD_BIT(KC_RCTL)) { // if holding Right Ctrl, change rgb hue/colour
         encoder_action_rgbhue(clockwise);
     } else {
-        switch (get_highest_layer(layer_state)) {
-        case _FN1:
-            #ifdef IDLE_TIMEOUT_ENABLE
-            timeout_update_threshold(clockwise);
-            #endif
-            break;
-        default:
-            encoder_action_volume(clockwise); // Otherwise it just changes volume
-            break;
-        }
+        encoder_action_volume(clockwise);
     }
     //return true; //set to return false to counteract enabled encoder in pro.c
     return false;
@@ -292,8 +283,11 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 #endif
 
 void keyboard_post_init_keymap(void) {
-    // keyboard_post_init_user() moved to userspace
     #ifdef RGB_MATRIX_ENABLE
-    activate_rgb_nightmode(false); // Set to true if you want to startup in nightmode, otherwise use Fn + Z to toggle
+    activate_rgb_nightmode(false);
+    uint8_t mode = rgb_matrix_get_mode();
+    if (mode != RGB_MATRIX_SOLID_COLOR && mode != RGB_MATRIX_CYCLE_OUT_IN_DUAL) {
+        rgb_matrix_mode(RGB_MATRIX_DEFAULT_MODE);
+    }
     #endif
 }
