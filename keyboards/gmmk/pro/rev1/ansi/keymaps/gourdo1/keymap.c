@@ -139,6 +139,7 @@ static void knob_draw(void) {
     if (value < 0) {
         return;
     }
+    rgb_matrix_set_color_all(0, 0, 0);
     knob_draw_bar(KNOB_BAR_LEFT, ARRAYSIZE(KNOB_BAR_LEFT), value);
     knob_draw_bar(KNOB_BAR_RIGHT, ARRAYSIZE(KNOB_BAR_RIGHT), value);
     knob_draw_bar(KNOB_BAR_FROW, ARRAYSIZE(KNOB_BAR_FROW), value);
