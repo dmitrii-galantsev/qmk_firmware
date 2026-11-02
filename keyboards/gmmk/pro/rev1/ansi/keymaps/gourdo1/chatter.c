@@ -18,13 +18,19 @@
 #ifndef CHATTER_SUSPECT_GAP
 #    define CHATTER_SUSPECT_GAP 40
 #endif
+#ifndef CHATTER_TOUCH_SETTLE
+#    define CHATTER_TOUCH_SETTLE 20
+#endif
+#ifndef CHATTER_TOUCH_MIN
+#    define CHATTER_TOUCH_MIN 1
+#endif
 #define CHATTER_LOG_SIZE 64
 #define CHATTER_KEYS (MATRIX_ROWS * MATRIX_COLS)
-#define CHATTER_VERSION 1
+#define CHATTER_VERSION 2
 
 #define CHATTER_CMD 0xD0
 enum { CHATTER_INFO = 1, CHATTER_EVENTS = 2, CHATTER_COUNTERS = 3, CHATTER_CLEAR = 4 };
-enum { CHATTER_PREVENTED = 1, CHATTER_SUSPECT = 2 };
+enum { CHATTER_PREVENTED = 1, CHATTER_SUSPECT = 2, CHATTER_TOUCH = 3 };
 
 typedef struct {
     uint32_t t0;
@@ -54,6 +60,11 @@ static uint32_t        shadow_released_at[CHATTER_KEYS];
 static uint16_t        presses[CHATTER_KEYS];
 static uint16_t        prevented[CHATTER_KEYS];
 static uint16_t        suspects[CHATTER_KEYS];
+static uint16_t        touches[CHATTER_KEYS];
+static bool            touch_waiting[CHATTER_KEYS];
+static uint32_t        touch_start[CHATTER_KEYS];
+static uint32_t        touch_end[CHATTER_KEYS];
+static uint16_t        touch_len[CHATTER_KEYS];
 static chatter_event_t events[CHATTER_LOG_SIZE];
 static uint32_t        next_seq;
 
@@ -102,11 +113,22 @@ bool debounce(matrix_row_t raw[], matrix_row_t cooked[], bool changed) {
             bool         r    = raw[row] & mask;
             bool         down = cooked[row] & mask;
 
+            if (!down && !r && main_filter[k].pending) {
+                uint16_t len = clamp16(TIMER_DIFF_32(now, main_filter[k].t0));
+                if (!touch_waiting[k] || len > touch_len[k]) {
+                    touch_len[k]   = len;
+                    touch_start[k] = main_filter[k].t0;
+                }
+                touch_end[k]     = now;
+                touch_waiting[k] = true;
+            }
+
             if (filter_step(&main_filter[k], &down, r, now, DEBOUNCE_PRESS, DEBOUNCE_RELEASE)) {
                 cooked[row] ^= mask;
                 cooked_changed = true;
                 if (down) {
                     presses[k]++;
+                    touch_waiting[k] = false;
                     if (released_once[k] && TIMER_DIFF_32(now, released_at[k]) < CHATTER_SUSPECT_GAP) {
                         suspects[k]++;
                         log_event(k, CHATTER_SUSPECT, TIMER_DIFF_32(now, released_at[k]), TIMER_DIFF_32(released_at[k], pressed_at[k]));
@@ -116,6 +138,14 @@ bool debounce(matrix_row_t raw[], matrix_row_t cooked[], bool changed) {
                     released_at[k]    = now;
                     released_once[k]  = true;
                     shadow_dropped[k] = false;
+                }
+            }
+
+            if (touch_waiting[k] && TIMER_DIFF_32(now, touch_end[k]) >= CHATTER_TOUCH_SETTLE) {
+                touch_waiting[k] = false;
+                if (touch_len[k] >= CHATTER_TOUCH_MIN) {
+                    touches[k]++;
+                    log_event(k, CHATTER_TOUCH, touch_len[k], released_once[k] ? TIMER_DIFF_32(touch_start[k], released_at[k]) : UINT32_MAX);
                 }
             }
 
@@ -165,6 +195,8 @@ bool via_command_kb(uint8_t *data, uint8_t length) {
             data[15] = CHATTER_LOG_SIZE;
             data[16] = MATRIX_ROWS;
             data[17] = MATRIX_COLS;
+            data[18] = CHATTER_TOUCH_SETTLE;
+            data[19] = CHATTER_TOUCH_MIN;
             break;
         case CHATTER_EVENTS: {
             uint32_t oldest = next_seq > CHATTER_LOG_SIZE ? next_seq - CHATTER_LOG_SIZE : 0;
@@ -181,12 +213,13 @@ bool via_command_kb(uint8_t *data, uint8_t length) {
         }
         case CHATTER_COUNTERS: {
             uint8_t n = 0;
-            while (n < 4 && start + n < CHATTER_KEYS) {
-                uint8_t *p = &data[4 + n * 6];
+            while (n < 3 && start + n < CHATTER_KEYS) {
+                uint8_t *p = &data[4 + n * 8];
                 uint8_t  k = (uint8_t)(start + n);
                 memcpy(p, &presses[k], 2);
                 memcpy(p + 2, &prevented[k], 2);
                 memcpy(p + 4, &suspects[k], 2);
+                memcpy(p + 6, &touches[k], 2);
                 n++;
             }
             data[2] = start;
@@ -197,6 +230,7 @@ bool via_command_kb(uint8_t *data, uint8_t length) {
             memset(presses, 0, sizeof presses);
             memset(prevented, 0, sizeof prevented);
             memset(suspects, 0, sizeof suspects);
+            memset(touches, 0, sizeof touches);
             break;
         default:
             data[1] = 0xFF;
