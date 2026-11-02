@@ -17,7 +17,7 @@
 #    define KNOB_HOST_TIMEOUT 5000
 #endif
 #ifndef KNOB_SHOW_MS
-#    define KNOB_SHOW_MS 2000
+#    define KNOB_SHOW_MS 1000
 #endif
 
 bool    knob_host_present(void);
