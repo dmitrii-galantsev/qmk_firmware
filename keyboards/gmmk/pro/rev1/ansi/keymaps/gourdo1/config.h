@@ -17,7 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define DEBOUNCE 10
+#define DEBOUNCE_PRESS 5
+#define DEBOUNCE_RELEASE 10
 
 // Force n-key rollover
 #define FORCE_NKRO
