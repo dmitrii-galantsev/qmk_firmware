@@ -128,8 +128,8 @@ static const uint8_t KNOB_BAR_FROW[]  = {LED_F1, LED_F2, LED_F3, LED_F4, LED_F5,
 static void knob_draw_bar(const uint8_t *leds, uint8_t count, uint8_t value) {
     for (uint8_t i = 0; i < count; i++) {
         uint8_t lit = knob_bar_cell(value, i, count);
-        uint8_t r   = 0x10 + (uint8_t)((0xFF - 0x10) * lit / 255);
-        uint8_t g   = 0x08 + (uint8_t)((0xB0 - 0x08) * lit / 255);
+        uint8_t r   = 0x0E + (uint8_t)((0xFF - 0x0E) * lit / 255);
+        uint8_t g   = 0x04 + (uint8_t)((0x5A - 0x04) * lit / 255);
         rgb_matrix_set_color(leds[i], r, g, 0x00);
     }
 }
