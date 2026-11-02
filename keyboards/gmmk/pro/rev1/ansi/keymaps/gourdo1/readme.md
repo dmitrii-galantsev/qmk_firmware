@@ -69,6 +69,8 @@ These Windows-centric layouts are based on Jonavin's GMMK Pro [layout](https://g
 
 * Default knob turn changes volume; button press toggles mute
 * Exponential encoder: quick repeated volume up doubles increase; quick repeated volume down triples decrease.
+* FN + knob turn changes display backlight through a host daemon (`knob.c`): each detent sends raw HID report `0xD1` (byte 1: `0x01` clockwise, `0xFF` counter-clockwise; byte 2: sequence). The host answers with `0xD2` (byte 1: flags, `0x01` show the bar, `0x02` host leaving; byte 2: level 0-100), which the keyboard echoes as `0xD2, version 1, level, host present`. The host must send `0xD2` at least every 5 s (heartbeat) to count as present; without a host, FN + knob turn changes the volume.
+* While the level changes (2 s after the last turn or `0xD2` with the show flag, and while FN stays held after a turn), both side LED strips (bottom to top) and F1-F12 (left to right) show it as an amber bar; the last lit LED is partly lit.
 * holding Left Shift changes layers
 * holding Right Shift navigates page up/down
 * holding Left Ctrl navigates prev/next word
@@ -106,7 +108,6 @@ These Windows-centric layouts are based on Jonavin's GMMK Pro [layout](https://g
 * [FN]N to toggle system numlock
 * [FN]/ is single-handed shortcut to Ctrl-Alt-Delete
 * [FN]L is single-handed shortcut to Win-L (lock Windows)
-* [FN][Encoder press] to sleep Windows PC
 
 ## Layer Diagrams (ANSI)
 ### Base layer

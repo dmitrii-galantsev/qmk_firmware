@@ -14,4 +14,4 @@ COLEMAK_LAYER_ENABLE = no     # Enable Colemak layer / set to no to disable
 INVERT_NUMLOCK_INDICATOR = yes
 
 DEBOUNCE_TYPE = custom
-SRC += chatter.c
+SRC += chatter.c knob.c

@@ -177,7 +177,7 @@ static uint32_t get32(const uint8_t *p) {
     return v;
 }
 
-bool via_command_kb(uint8_t *data, uint8_t length) {
+bool chatter_via_command(uint8_t *data, uint8_t length) {
     if (data[0] != CHATTER_CMD) {
         return false;
     }

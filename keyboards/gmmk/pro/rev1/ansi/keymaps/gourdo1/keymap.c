@@ -24,6 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gourdo1.h"
 
+#include "knob.h"
+
 #include <math.h>
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -103,7 +105,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         encoder_action_navword(clockwise);
     } else if (mods_state & MOD_BIT(KC_RCTL)) { // if holding Right Ctrl, change rgb hue/colour
         encoder_action_rgbhue(clockwise);
-    } else {
+    } else if (get_highest_layer(layer_state) != _FN1 || !knob_tick(clockwise)) {
         encoder_action_volume(clockwise);
     }
     //return true; //set to return false to counteract enabled encoder in pro.c
@@ -111,7 +113,36 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 }
 #endif // ENCODER_ENABLE && !ENCODER_DEFAULTACTIONS_ENABLE
 
+bool chatter_via_command(uint8_t *data, uint8_t length);
+
+bool via_command_kb(uint8_t *data, uint8_t length) {
+    return chatter_via_command(data, length) || knob_via_command(data, length);
+}
+
 #ifdef RGB_MATRIX_ENABLE
+
+static const uint8_t KNOB_BAR_LEFT[]  = {LED_L8, LED_L7, LED_L6, LED_L5, LED_L4, LED_L3, LED_L2, LED_L1};
+static const uint8_t KNOB_BAR_RIGHT[] = {LED_R8, LED_R7, LED_R6, LED_R5, LED_R4, LED_R3, LED_R2, LED_R1};
+static const uint8_t KNOB_BAR_FROW[]  = {LED_F1, LED_F2, LED_F3, LED_F4, LED_F5, LED_F6, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12};
+
+static void knob_draw_bar(const uint8_t *leds, uint8_t count, uint8_t value, uint8_t led_min, uint8_t led_max) {
+    for (uint8_t i = 0; i < count; i++) {
+        uint8_t lit = knob_bar_cell(value, i, count);
+        uint8_t r   = 0x10 + (uint8_t)((0xFF - 0x10) * lit / 255);
+        uint8_t g   = 0x08 + (uint8_t)((0xB0 - 0x08) * lit / 255);
+        RGB_MATRIX_INDICATOR_SET_COLOR(leds[i], r, g, 0x00);
+    }
+}
+
+static void knob_draw(uint8_t led_min, uint8_t led_max) {
+    int16_t value = knob_display_level(get_highest_layer(layer_state) == _FN1);
+    if (value < 0) {
+        return;
+    }
+    knob_draw_bar(KNOB_BAR_LEFT, ARRAYSIZE(KNOB_BAR_LEFT), value, led_min, led_max);
+    knob_draw_bar(KNOB_BAR_RIGHT, ARRAYSIZE(KNOB_BAR_RIGHT), value, led_min, led_max);
+    knob_draw_bar(KNOB_BAR_FROW, ARRAYSIZE(KNOB_BAR_FROW), value, led_min, led_max);
+}
 
 // Capslock, Scroll lock and Numlock indicator on Left side lights.
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
@@ -278,6 +309,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     default:
         break;
     }
+    knob_draw(led_min, led_max);
     return false;
 }
 #endif
